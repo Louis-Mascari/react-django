@@ -11,8 +11,9 @@
   margin-left: 2.25rem;
 }
 
-.recipe-details-div p {
+.recipe-details-div pre {
   margin-left: 2.25rem;
+  text-wrap: pretty;
 }
 
 .recipe-details-div button {

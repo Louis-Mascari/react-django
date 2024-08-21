@@ -7,7 +7,7 @@ const Header = () => {
 
   return (
     <header className="header">
-      <img src={icon}></img>
+      <img src={icon} onClick={() => navigate("/")}></img>
       <h1 className="app-name" onClick={() => navigate("/")}>
         Recipe Wrangler
       </h1>

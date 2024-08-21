@@ -3,29 +3,23 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const RecipeList = () => {
-  const [recipes, setRecipes] = useState([
-    { id: 1, title: "chop suey" },
-    { id: 2, title: "chop suey" },
-    { id: 3, title: "chop suey" },
-    { id: 4, title: "chop suey" },
-    { id: 5, title: "chop suey" },
-  ]);
-  const [loading, setLoading] = useState(false);
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   fetch("http://localhost:8000/recipes")
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setRecipes(data);
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching recipes: ", error);
-  //       setLoading(false);
-  //     });
-  // }, []);
+  useEffect(() => {
+    fetch("http://localhost:8000/recipes/")
+      .then((response) => response.json())
+      .then((data) => {
+        setRecipes(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching recipes: ", error);
+        setLoading(false);
+      });
+  }, []);
 
   const handleEdit = (event, id) => {
     event.stopPropagation();
@@ -37,7 +31,21 @@ const RecipeList = () => {
     const userChoice = confirm(
       `Are you sure you want to delete ${recipe.title}? This is irreversible.`,
     );
-    console.log(userChoice);
+
+    if (userChoice === true) {
+      setLoading(true);
+      fetch(`http://localhost:8000/recipes/${recipe.id}/`, {
+        method: "DELETE",
+      })
+        .then(() => {
+          setRecipes(recipes.filter((r) => r.id !== recipe.id));
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error deleting recipe: ", error);
+          setLoading(false);
+        });
+    }
   };
 
   const handleClick = (id) => {
@@ -76,9 +84,9 @@ const RecipeList = () => {
           </ul>
         </div>
       ) : (
-        <div>
-          <p>No recipes available</p>
-          <a onClick={() => navigate("add")}>Add new recipe</a>
+        <div className="empty-recipes-div">
+          <p>No recipes yet...</p>
+          <button onClick={() => navigate("/add")}>Add Recipe</button>
         </div>
       )}
     </div>

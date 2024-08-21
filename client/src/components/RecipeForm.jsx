@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 const RecipeForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [instructions, setInstructions] = useState("");
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -14,10 +14,10 @@ const RecipeForm = () => {
     if (id) {
       setIsEditing(true);
       setLoading(true);
-      fetch(`http://localhost:8000/recipes/${id}`)
+      fetch(`http://localhost:8000/recipes/${id}/`)
         .then((response) => response.json())
         .then((data) => {
-          setName(data.name);
+          setTitle(data.title);
           setInstructions(data.instructions);
           setLoading(false);
         })
@@ -33,8 +33,8 @@ const RecipeForm = () => {
     setLoading(true);
 
     const url = id
-      ? `http://localhost:8000/recipes/${id}`
-      : "http://localhost:8000/recipes";
+      ? `http://localhost:8000/recipes/${id}/`
+      : "http://localhost:8000/recipes/";
     const method = id ? "PUT" : "POST";
 
     fetch(url, {
@@ -42,11 +42,11 @@ const RecipeForm = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, instructions }),
+      body: JSON.stringify({ title, instructions }),
     })
       .then((response) => response.json())
       .then(() => {
-        setName("");
+        setTitle("");
         setInstructions("");
         setLoading(false);
         navigate("/");
@@ -57,8 +57,8 @@ const RecipeForm = () => {
       });
   };
 
-  const handleNameChange = (e) => {
-    setName(e.target.value);
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
   };
 
   const handleInstructionsChange = (e) => {
@@ -69,9 +69,9 @@ const RecipeForm = () => {
     <form className="form" onSubmit={handleSubmit}>
       <input
         type="text"
-        name="recipe"
-        value={name}
-        onChange={handleNameChange}
+        name="title"
+        value={title}
+        onChange={handleTitleChange}
         placeholder="Recipe..."
         disabled={loading}
         required
